@@ -30,13 +30,12 @@ jobs:
         with:
           context: .
           push: false
+          load: true
           tags: hybrid-log-classifier:ci
       - run: |
           docker run -d --name hybrid-log-ci -p 8000:8000 hybrid-log-classifier:ci
           for i in $(seq 1 20); do curl --fail http://127.0.0.1:8000/health && break; sleep 1; done
-          curl --fail -X POST http://127.0.0.1:8000/classify \
-            -H 'Content-Type: application/json' \
-            -d '{"text":"failed login user=ci"}'
+          curl --fail -X POST http://127.0.0.1:8000/classify             -H 'Content-Type: application/json'             -d '{"text":"failed login user=ci"}'
       - if: always()
         run: docker logs hybrid-log-ci || true
       - if: always()
