@@ -2,6 +2,7 @@ FROM python:3.12-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
+    PYTHONPATH=/app/src \
     MODEL_PATH=/app/models/classifier.joblib \
     DATABASE_PATH=/app/runtime/classifications.db
 
@@ -13,7 +14,7 @@ COPY scripts ./scripts
 COPY app.py ./app.py
 
 RUN pip install --no-cache-dir -r requirements.txt \
-    && PYTHONPATH=src python scripts/train.py \
+    && python scripts/train.py \
     && useradd --create-home --uid 10001 appuser \
     && mkdir -p runtime \
     && chown -R appuser:appuser /app
