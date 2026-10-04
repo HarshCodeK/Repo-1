@@ -3,6 +3,7 @@ from time import perf_counter
 from .domain import Category, Classification, ClassificationTier, LogEvent
 from .ml import MLClassifier
 from .persistence import ClassificationStore
+from .rules import classify
 
 
 class ClassifierService:
@@ -12,7 +13,7 @@ class ClassifierService:
 
     def classify(self, event: LogEvent) -> Classification:
         started = perf_counter()
-        rule_match = __import__("hybrid_log_classifier.rules", fromlist=["classify"]).classify(event.text)
+        rule_match = classify(event.text)
         if rule_match:
             result = Classification(rule_match.category, ClassificationTier.RULE, 1.0, rule_match.reason, self._elapsed(started))
             self._save(event.text, result)
